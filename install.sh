@@ -305,7 +305,20 @@ PLISTEOF
     # bootout first so a re-install replaces the old definition rather than
     # failing with "service already loaded".
     launchctl bootout "gui/$(id -u)/com.contextify.proxy" 2>/dev/null || true
-    if launchctl bootstrap "gui/$(id -u)" "$PLIST" 2>/dev/null; then STARTED=1; fi
+
+    # Errors are SHOWN, not swallowed. They were hidden behind 2>/dev/null,
+    # which meant a service that failed to register looked identical to one
+    # that started fine — and the only symptom left was "proxy is down" with
+    # no way to find out why.
+    BOOT_ERR="$(launchctl bootstrap "gui/$(id -u)" "$PLIST" 2>&1)" && STARTED=1
+    if [ "$STARTED" -ne 1 ]; then
+      warn "launchctl bootstrap failed: ${BOOT_ERR:-no message}"
+      # Older macOS predates bootstrap/bootout.
+      if launchctl load -w "$PLIST" 2>/dev/null; then
+        STARTED=1
+        ok "registered with launchctl load (legacy path)"
+      fi
+    fi
     ;;
   Linux)
     UNIT_DIR="$HOME/.config/systemd/user"
@@ -341,7 +354,18 @@ if [ "$STARTED" -eq 1 ]; then
   else
     STARTED=0
     warn "the service was registered but the proxy did not answer on port $PORT"
-    info "    check $INSTALL_DIR/proxy.log"
+    # Show the reason here rather than pointing at a file. A failure the user
+    # has to go hunting for is a failure they will report as "it just says
+    # down", which is not something anyone can act on.
+    if [ -s "$INSTALL_DIR/proxy.log" ]; then
+      info ""
+      info "  Last lines of $INSTALL_DIR/proxy.log:"
+      tail -n 8 "$INSTALL_DIR/proxy.log" | sed 's/^/    /'
+    else
+      info ""
+      info "  No output was logged. Run it in the foreground to see the error:"
+      info "    cd $INSTALL_DIR && npm start"
+    fi
   fi
 else
   warn "could not register a background service on this system"
