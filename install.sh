@@ -262,13 +262,105 @@ case ":$PATH:" in
     ;;
 esac
 
+# ── Start it ──────────────────────────────────────────────────────────────────
+#
+# Previously the installer finished by PRINTING `npm start` and stopped. That
+# left every new install with nothing running and nothing hooked: the proxy was
+# not listening, Claude Code was not pointed at it, and the honest report from
+# `contextify status` was a row of warnings. "Installed" has to mean running.
+#
+# A user-level service, never a system one: no sudo, and it dies with the user
+# session rather than lingering as root.
+step "Starting the proxy"
+STARTED=0
+case "$(uname -s)" in
+  Darwin)
+    PLIST="$HOME/Library/LaunchAgents/com.contextify.proxy.plist"
+    mkdir -p "$HOME/Library/LaunchAgents"
+    cat > "$PLIST" <<PLISTEOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.contextify.proxy</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$(command -v node)</string>
+    <string>$INSTALL_DIR/dist/server.js</string>
+  </array>
+  <key>WorkingDirectory</key><string>$INSTALL_DIR</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>$INSTALL_DIR/proxy.log</string>
+  <key>StandardErrorPath</key><string>$INSTALL_DIR/proxy.log</string>
+</dict>
+</plist>
+PLISTEOF
+    # bootout first so a re-install replaces the old definition rather than
+    # failing with "service already loaded".
+    launchctl bootout "gui/$(id -u)/com.contextify.proxy" 2>/dev/null || true
+    if launchctl bootstrap "gui/$(id -u)" "$PLIST" 2>/dev/null; then STARTED=1; fi
+    ;;
+  Linux)
+    UNIT_DIR="$HOME/.config/systemd/user"
+    mkdir -p "$UNIT_DIR"
+    cat > "$UNIT_DIR/contextify.service" <<UNITEOF
+[Unit]
+Description=Contextify proxy
+After=network.target
+
+[Service]
+ExecStart=$(command -v node) $INSTALL_DIR/dist/server.js
+WorkingDirectory=$INSTALL_DIR
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target
+UNITEOF
+    if systemctl --user daemon-reload 2>/dev/null &&
+       systemctl --user enable --now contextify.service 2>/dev/null; then STARTED=1; fi
+    ;;
+esac
+
+if [ "$STARTED" -eq 1 ]; then
+  # Poll rather than sleep: the service manager returns before the port binds.
+  for _ in $(seq 1 40); do
+    if curl -fsS "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then break; fi
+    sleep 0.25
+  done
+  if curl -fsS "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then
+    ok "proxy running on port $PORT, and will start again at login"
+  else
+    STARTED=0
+    warn "the service was registered but the proxy did not answer on port $PORT"
+    info "    check $INSTALL_DIR/proxy.log"
+  fi
+else
+  warn "could not register a background service on this system"
+  info "    start it yourself with: cd $INSTALL_DIR && npm start"
+fi
+
+# ── Hook Claude Code ──────────────────────────────────────────────────────────
+#
+# The step that makes Claude Code actually route through the proxy. It was
+# never run, and never even mentioned, so an install that "succeeded" optimised
+# nothing at all.
+#
+# Allowed to fail without failing the install: it exits non-zero, by design,
+# when Claude Code authenticates with a Pro/Max subscription — a flat fee has
+# no per-token bill to cut. Its own output explains that far better than a
+# generic installer error would.
+if [ "$STARTED" -eq 1 ]; then
+  printf '\n'
+  step "Hooking Claude Code"
+  CONTEXTIFY_URL="http://127.0.0.1:$PORT" node "$INSTALL_DIR/dist/contextify.js" install || true
+fi
+
 # ── Done ──────────────────────────────────────────────────────────────────────
 cat <<EOF
 
 ${BOLD}Installed.${RESET}
-
-  cd $INSTALL_DIR
-  npm start
 
 Link this machine to your account:
 
