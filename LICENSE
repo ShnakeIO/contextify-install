@@ -1,0 +1,154 @@
+CONTEXTIFY END USER LICENSE AGREEMENT
+Version 2.0, 2026
+
+Copyright (c) 2026 Contextify. All rights reserved.
+
+THIS IS PROPRIETARY SOFTWARE. IT IS NOT OPEN SOURCE. Read this before
+installing or using it.
+
+Earlier versions of parts of this software were briefly published under the
+Apache License, Version 2.0. Those grants, where they were actually received,
+remain in force for the versions to which they applied. This version and all
+later versions are governed exclusively by this agreement.
+
+1. DEFINITIONS
+
+   "Software" means the Contextify proxy, its command-line tools, its
+   configuration and setup programs, its hosted components, and any object,
+   bundled, minified, or compiled form of any of them.
+
+   "You" means the individual or entity that installs or uses the Software.
+
+   "Credit" means prepaid entitlement to Optimisation, purchased from
+   Contextify or granted by Contextify without charge.
+
+   "Optimisation" means the Software's caching, request coalescing, cache
+   breakpoint injection, deduplication, and related functions that reduce the
+   fees You would otherwise pay to a model provider.
+
+   "Free Allowance" means the first fifteen United States dollars (US$15.00)
+   of measured savings, granted once per account.
+
+2. GRANT
+
+   Subject to this agreement, Contextify grants You a limited, revocable,
+   non-exclusive, non-transferable, non-sublicensable licence to install and
+   run the Software for Your own internal purposes, for so long as You hold
+   Free Allowance or Credit, or an active subscription.
+
+   No other rights are granted. Rights not expressly granted are reserved.
+
+3. RESTRICTIONS
+
+   You may not:
+
+   (a) copy, publish, distribute, sell, rent, lease, sublicense, or otherwise
+       make the Software available to any third party;
+
+   (b) provide the Software, or its functionality, to third parties as a
+       hosted, managed, or software-as-a-service offering;
+
+   (c) reverse engineer, decompile, disassemble, deobfuscate, or otherwise
+       attempt to derive the source code, algorithms, or internal structure of
+       the Software, except to the minimum extent that this restriction is
+       unenforceable under applicable law;
+
+   (d) circumvent, disable, tamper with, falsify, or misreport any licence
+       check, Credit accounting, usage measurement, or activation mechanism,
+       nor use the Software after Credit is exhausted other than as Section 6
+       permits, nor distribute any build in which such a mechanism has been
+       modified;
+
+   (e) remove, obscure, or alter any copyright, trademark, or licence notice;
+
+   (f) use the Software to build or assist in building a competing product.
+
+4. CREDIT AND FEES
+
+   (a) The Free Allowance is granted once per account and is not renewable.
+
+   (b) Beyond the Free Allowance, Optimisation requires Credit. Credit is
+       prepaid, is denominated in measured savings, and is consumed as savings
+       are delivered.
+
+   (c) Savings are measured from the model provider's own reported usage
+       figures. The measurement method is described in the product
+       documentation, and Your statement itemises it.
+
+   (d) Credit is non-refundable except where required by law, and expires
+       twenty-four (24) months after purchase.
+
+   (e) Prices may change on thirty (30) days' notice. Credit already purchased
+       is honoured at the rate at which it was bought.
+
+5. MEASUREMENT AND ACTIVATION
+
+   (a) The Software reports measured savings, a licence identifier, and an
+       anonymous instance identifier to Contextify in order to account for
+       Credit. It does not transmit prompts, completions, API credentials,
+       hostnames, or network addresses.
+
+   (b) You consent to that reporting for the term of this agreement. It is
+       necessary for Credit accounting and cannot be disabled while Credit is
+       in use.
+
+   (c) You may not interfere with, spoof, replay, or block that reporting.
+
+6. WHAT HAPPENS WHEN CREDIT RUNS OUT
+
+   When Free Allowance and Credit are exhausted, the Software STOPS
+   OPTIMISING AND CONTINUES TO OPERATE AS A TRANSPARENT PASS-THROUGH. Your
+   requests keep reaching Your model provider. Nothing you have deployed
+   stops working; it simply stops saving You money until Credit is added.
+
+   Contextify does not assert, and expressly disclaims, any right to interrupt
+   the operation of Your systems.
+
+7. OWNERSHIP
+
+   The Software is licensed, not sold. Contextify retains all right, title,
+   and interest in it, including all intellectual property rights. Any
+   feedback You provide may be used by Contextify without obligation to You.
+
+8. TERM AND TERMINATION
+
+   This agreement runs until terminated. It terminates automatically on breach
+   of Section 3 or Section 5. Contextify may terminate it on thirty (30) days'
+   notice, in which case unused Credit is refunded pro rata.
+
+   On termination You must stop using and delete all copies of the Software.
+   Sections 3, 6, 7, 9, 10, 11, and 12 survive.
+
+9. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. CONTEXTIFY DOES NOT
+   WARRANT THAT ANY PARTICULAR LEVEL OF SAVINGS WILL BE ACHIEVED. SAVINGS
+   DEPEND ON THE SHAPE OF YOUR TRAFFIC.
+
+10. LIMITATION OF LIABILITY
+
+   TO THE MAXIMUM EXTENT PERMITTED BY LAW, CONTEXTIFY'S TOTAL LIABILITY UNDER
+   THIS AGREEMENT WILL NOT EXCEED THE AMOUNTS YOU PAID IN THE TWELVE (12)
+   MONTHS PRECEDING THE CLAIM. CONTEXTIFY WILL NOT BE LIABLE FOR INDIRECT,
+   INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR FOR LOST
+   PROFITS, REVENUE, OR DATA.
+
+11. THIRD-PARTY COMPONENTS
+
+   The Software incorporates third-party open-source components, which remain
+   subject to their own licences. Those licences are reproduced in
+   THIRD-PARTY-NOTICES. Nothing in this agreement limits Your rights under
+   them.
+
+12. GOVERNING LAW
+
+   [JURISDICTION AND VENUE TO BE COMPLETED BEFORE THIS AGREEMENT IS OFFERED TO
+   ANY CUSTOMER. A licence without a governing law and venue clause is
+   materially harder to enforce. This is the single item on this page that
+   most requires a lawyer rather than a template.]
+
+13. CONTACT
+
+   enterprise@contextifyai.com
