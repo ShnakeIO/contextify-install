@@ -283,9 +283,15 @@ case "$(uname -s)" in
 <plist version="1.0">
 <dict>
   <key>Label</key><string>com.contextify.proxy</string>
+  <!-- --env-file-if-exists is NOT optional. Without it the service ignores
+       .env entirely and the proxy binds its built-in default port instead of
+       the configured one, so it runs perfectly somewhere nobody is looking:
+       the CLI, the doctor and the Claude Code hook all read the configured
+       port and report "proxy is down" against a healthy process. -->
   <key>ProgramArguments</key>
   <array>
     <string>$(command -v node)</string>
+    <string>--env-file-if-exists=.env</string>
     <string>$INSTALL_DIR/dist/server.js</string>
   </array>
   <key>WorkingDirectory</key><string>$INSTALL_DIR</string>
@@ -310,7 +316,8 @@ Description=Contextify proxy
 After=network.target
 
 [Service]
-ExecStart=$(command -v node) $INSTALL_DIR/dist/server.js
+# --env-file-if-exists is NOT optional; see the macOS plist above for why.
+ExecStart=$(command -v node) --env-file-if-exists=.env $INSTALL_DIR/dist/server.js
 WorkingDirectory=$INSTALL_DIR
 Restart=always
 RestartSec=2
