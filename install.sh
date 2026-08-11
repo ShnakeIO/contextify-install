@@ -185,6 +185,16 @@ fi
 
 mkdir -p "$TMP_DIR/unpacked"
 tar -xzf "$TMP_DIR/contextify.tar.gz" -C "$TMP_DIR/unpacked"
+
+# Record which BUILD this is, not just which version.
+#
+# Version numbers do not move on every release — several fixes shipped as
+# 0.1.0 — so comparing versions cannot tell a machine that its copy is stale.
+# It never noticed, kept running an old CLI, and every fix appeared to have no
+# effect. The checksum changes with the bytes, so it always can.
+if [ -s "$TMP_DIR/expected.sha256" ]; then
+  awk '{print $1}' < "$TMP_DIR/expected.sha256" > "$TMP_DIR/unpacked/.release-sha"
+fi
 [ -f "$TMP_DIR/unpacked/package.json" ] || die "The downloaded archive is not a Contextify release."
 
 # Only now is the install directory touched. An existing .env is preserved:
