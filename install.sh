@@ -237,6 +237,21 @@ fi
 
 npm run setup -- "${SETUP_ARGS[@]}"
 
+# Adopt whatever port setup actually chose.
+#
+# Setup moves off a port that is already in use, and it writes the choice to
+# .env. Everything after this point kept using the requested port instead, so a
+# machine where 3000 was taken reported "the proxy did not answer on port 3000"
+# about a proxy that was answering perfectly on 3002, and then printed the wrong
+# URL to point an SDK at.
+if [ -f "$INSTALL_DIR/.env" ]; then
+  CHOSEN_PORT="$(grep -E '^[[:space:]]*PORT[[:space:]]*=' "$INSTALL_DIR/.env" | tail -1 | sed 's/.*=[[:space:]]*//' | tr -d '"' | tr -d "'" | tr -d '[:space:]')"
+  if [ -n "$CHOSEN_PORT" ] && [ "$CHOSEN_PORT" != "$PORT" ]; then
+    info "  ${DIM}port $PORT was taken; using $CHOSEN_PORT${RESET}"
+    PORT="$CHOSEN_PORT"
+  fi
+fi
+
 # ── The `contextify` command ──────────────────────────────────────────────────
 #
 # Without this there is no `contextify` on PATH at all, and every instruction
